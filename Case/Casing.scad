@@ -1,150 +1,126 @@
+// LightClock project main file
+//
+// Pierre Cauchois (pierreca)
+// 5/18/2014
+
+// TODO:
+// - Ring holders for 12 and 24 LEDs rings
+// - "Margin" for the LCD screen is already taken care of, but not for the screw holes
+
+use <Hardware.scad>;
+use <Arduino.scad>;
+use <NeoPixels.scad>;
 
 $fa=0.1;
 
 // all units in mm
 clock_radius = 85;
-screwhole_radius = 2;
-
-// Arduino Components
-lcd_screen_width=71;
-lcd_screen_height=26;
-
-chronodot_outer_radius = 15;
-chronodot_height = 7;
-
-// LED Rings
-ring_height = 3;
-
-ring60_inner_radius = 72.5;
-ring60_outer_radius = 78.5;
-
-ring24_inner_radius = 26;
-ring24_outer_radius = 32.5;
-
-ring12_inner_radius = 12;
-ring12_outer_radius = 18.5;
+screwhole_radius = 3;
+acrylic_plate_height = 3;
 
 // Positions
-
 left_eye_height = 25;
 right_eye_height = 20;
 eye_separation = 53;
 
-arduino_x = -40;
-arduino_y = -5;
+arduino_x = -40.5;
+arduino_y = -60;
 arduino_z = -20;
 
-buttons_x = lcd_screen_x - 4;
-buttons_y = lcd_screen_y - 32;
-
-module led_ring(inner_radius, outer_radius) {
-	difference() {
-		cylinder(h=ring_height, r=outer_radius);
-		cylinder(h=ring_height, r=inner_radius);
-	}
-}
-
-module button(x, y) {
-	translate([x,y,0]) {
-		cube(size=[6,6,6]);
-	}
-}
-
-module buttons(x, y) {
-	translate([x,y,0]) {
-		color("blue") {
-			button(x, y + 4);
-			button(x + 8, y);
-			button(x + 8, y + 7);
-			button(x + 16, y + 4);
-			button(x + 24, y + 7);
-			button(x + 72.5, y);
-		}
-	}
-}
-
-module arduino_lcd_shield (x, y, z) {
-	translate([x, y - 54, z]) {
-		color("blue") cube(size=[69, 54, 13]);
-		color("silver") {
-			translate([13.5,2.5,-20]) cylinder(h=20, r=screwhole_radius);
-			translate([66,7.5,-20]) cylinder(h=20, r=screwhole_radius);
-			translate([66,35,-20]) cylinder(h=20, r=screwhole_radius);
-			translate([15,51,-20]) cylinder(h=20, r=screwhole_radius);
-		}
-		translate([0, 0, 13]) {
-			// base PCB
-			color("teal") cube(size=[81, 54, 1.6]);
-			// buttons
-			translate([0, 0, 1.6])
-			color("grey") buttons(0, 0);
-			// screen PCB
-			translate([0, 15, 6.6]){
-				color("teal") cube(size=[81, 36, 1.6]);
-				// screen
-				translate([4, 4.5, 1.6])
-					color("magenta")cube(size=[lcd_screen_width, lcd_screen_height, 15]);
-			}
-		}
-	}
-}
-
-module left_eye (x, y, z) {
- 	translate([x, y, z]) {
-		led_ring(ring24_inner_radius, ring24_outer_radius);
-
-		translate([0, -13, -35])
-			color("silver") cylinder(h=50, r=screwhole_radius);
-		
-		color("darkblue")
-			translate([0, 10, -5])
-				cylinder(h=chronodot_height, r=chronodot_outer_radius);
-
-		color("silver") 
-			translate([-12.5,10,-40]) cylinder(h=40, r=screwhole_radius);
-	}
-}
-
-module right_eye (x, y, z) {
- 	translate([x, y, z]) {
-		led_ring(ring12_inner_radius, ring12_outer_radius);
-		translate([0, -8, -35])
-			color("silver") cylinder(h=50, r=screwhole_radius);
-	}
-}
-
-module face(x, y, z) {
+module chronodot(x, y, z) {
 	translate([x, y, z]) {
-		led_ring(ring60_inner_radius, ring60_outer_radius);
+		difference() {
+			color("darkblue") cylinder(h=1.75, r=15);
+			translate([0, -12, 0]) cylinder(h=2, r=1.5);
+		}
+		color("silver") translate([0, 5, 1.75]) cylinder(h=4, r=8.5); 
+	}
+}
+
+module components(x, y, z) {
+	translate([x, y, z]) {
+		neopixels_ring_60(0, 0, 0);
+
+		// left eye
+		neopixels_ring_24(eye_separation / 2, left_eye_height, 0);
+
+		// right eye
+		neopixels_ring_12(-eye_separation / 2, right_eye_height, 0);
+
+		// chronodot
+		chronodot(eye_separation / 2, left_eye_height + 10, -20);
 		
-		left_eye(eye_separation / 2, left_eye_height, 0);
-		right_eye(-eye_separation / 2, right_eye_height, 0);
-		
+		// arduino + lcd shield
 		arduino_lcd_shield(arduino_x, arduino_y, arduino_z);
 	}
 }
 
+module mounting_hardware(x, y, z) {
+	translate([x, y, z]) {
+		// Large screws
+		rotate([180, 0, 0]) long_screw(eye_separation / 2, -(left_eye_height - 13), -12);
+		rotate([180, 0, 0]) long_screw(-eye_separation / 2, -(right_eye_height - 8), -12);
+
+		// Arduino mounting spacers and screws
+		spacer(-25, -9, -30);
+		screw(-25, -9, -35.5);
+
+		spacer(-27, -57.5, -30);
+		screw(-27, -57.5, -35.5);
+
+		spacer(25.5, -52.5, -30);
+		screw(25.5, -52.5, -35.5);
+
+		spacer(25.5, -25, -30);
+		screw(25.5, -25, -35.5);
+
+		// Chronodot spacer and screw
+		spacer(eye_separation / 2, left_eye_height - 2, -30);
+		screw(eye_separation / 2, left_eye_height - 2, -35.5);
+	}
+}
+
+module ring_holder (x, y, z) {
+	translate([x, y, z]) {
+		difference() {
+			cube(size=[20, 3, 37]);
+			translate([5, 0, 33]) cube(size=[9, 4, 4]);
+			translate([10.5, 0, 0]) cube(size=[11, 4, 3]);
+		}
+	}
+}
 
 module face_plate (x, y, z) {
- 	translate([x, y, z]) {
-		cylinder(r = clock_radius, h = 6.35);
-	}
+ 	translate([x, y, z])
+		cylinder(r = clock_radius, h = acrylic_plate_height);
 }
 
 module back_plate (x, y, z) {
  	translate([x, y, z]) {
-		cylinder(r = clock_radius, h = 6.35);
+		cylinder(r = clock_radius, h = acrylic_plate_height);
+	}
+}
+
+module ring_holders(x, y, z) {
+	translate([x, y, z]) {
+		ring_holder(-clock_radius, -1.5, -33);
+		rotate([0, 0, 90]) ring_holder(-clock_radius, -1.5, -33);
+		rotate([0, 0, 180]) ring_holder(-clock_radius, -1.5, -33);
+		rotate([0, 0, -90]) ring_holder(-clock_radius, -1.5, -33);
 	}
 }
 
 //projection()
 //difference() {
 //	color("black") face_plate(0, 0, 0);
-//	face(0, 0, -4);
+//	components(0, 0, -4);
 //}
 
-projection()
-difference() {
-	color("black") back_plate(0, 0, -35);
-	face(0, 0, -4);
-}
+//projection()
+//difference() {
+	color("black") face_plate(0, 0, 4);
+	color("black") back_plate(0, 0, -33);
+	components(0, 0, 0);
+	mounting_hardware(0, 0, 0);
+	color("red") ring_holders(0,0,0);
+//}
