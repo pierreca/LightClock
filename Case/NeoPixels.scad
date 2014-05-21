@@ -18,7 +18,7 @@ ring12_outer_radius = 18.5;
 module led_ring(inner_radius, outer_radius) {
 	difference() {
 		cylinder(h=ring_height, r=outer_radius);
-		cylinder(h=ring_height, r=inner_radius);
+		translate([0,0,-0.5]) cylinder(h=ring_height + 1, r=inner_radius);
 	}
 }
 
@@ -40,6 +40,6 @@ module neopixels_ring_60(x, y, z) {
 	}
 }
 
-neopixels_ring_12(0, 0, 0);
-neopixels_ring_24(0, 0, 0);
-neopixels_ring_60(0, 0, 0);
+//neopixels_ring_12(0, 0, 0);
+//neopixels_ring_24(0, 0, 0);
+//neopixels_ring_60(0, 0, 0);

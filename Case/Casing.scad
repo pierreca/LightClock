@@ -9,7 +9,7 @@
 
 use <Hardware.scad>;
 use <Arduino.scad>;
-use <NeoPixels.scad>;
+include <NeoPixels.scad>;
 
 $fa=0.1;
 
@@ -83,9 +83,45 @@ module mounting_hardware(x, y, z) {
 module ring_holder (x, y, z) {
 	translate([x, y, z]) {
 		difference() {
-			cube(size=[20, 3, 37]);
-			translate([5, 0, 33]) cube(size=[9, 4, 4]);
-			translate([10.5, 0, 0]) cube(size=[11, 4, 3]);
+			cube(size=[20, acrylic_plate_height, 37]);
+			translate([5, 0, 33]) cube(size=[9, acrylic_plate_height + 1, 4]);
+			translate([10.5, -0.5, -1]) cube(size=[11, acrylic_plate_height + 1, acrylic_plate_height + 1]);
+		}
+	}
+}
+
+module eyes_plate(x, y, z) {
+	translate([x, y, z]) {
+		difference() {
+			hull() {
+				translate([eye_separation / 2, left_eye_height, 0]) 
+					cylinder(r = ring24_outer_radius + 2, h = acrylic_plate_height);
+	
+				translate([-eye_separation / 2, right_eye_height, 0]) 
+					cylinder(r = ring12_outer_radius + 2, h = acrylic_plate_height);
+			}
+
+			translate([0,-10,-0.5]) cube(size=[60, 5, acrylic_plate_height + 1]);
+			translate([eye_separation / 2, (left_eye_height - 13), -0.5]) 
+				cylinder(r = 2.5, h = acrylic_plate_height + 1);
+			translate([-eye_separation / 2, (right_eye_height - 8), -0.5]) 
+				cylinder(r = 2.5, h = acrylic_plate_height + 1);
+
+			translate([0, 10, -0.5]) cube(size=[acrylic_plate_height,10, acrylic_plate_height + 1]);
+			translate([0, 30, -0.5]) cube(size=[acrylic_plate_height,10, acrylic_plate_height + 1]);
+		}
+		eyes_plate_holder(0, 10, -36 + 2 * acrylic_plate_height);
+	}
+}
+
+module eyes_plate_holder(x, y, z) {
+	translate([x, y, z]) {
+		difference() {
+			cube(size=[acrylic_plate_height, 30, 36 - acrylic_plate_height]);
+			translate([-0.5, 10, -1]) 
+				cube(size=[acrylic_plate_height + 1, 10, acrylic_plate_height + 1]);
+			translate([-0.5, 10, 36 - acrylic_plate_height - acrylic_plate_height]) 
+				cube(size=[acrylic_plate_height + 1, 10, acrylic_plate_height + 1]);
 		}
 	}
 }
@@ -103,10 +139,13 @@ module back_plate (x, y, z) {
 
 module ring_holders(x, y, z) {
 	translate([x, y, z]) {
+		// 60-LEDs ring holders
 		ring_holder(-clock_radius, -1.5, -33);
 		rotate([0, 0, 90]) ring_holder(-clock_radius, -1.5, -33);
 		rotate([0, 0, 180]) ring_holder(-clock_radius, -1.5, -33);
 		rotate([0, 0, -90]) ring_holder(-clock_radius, -1.5, -33);
+
+		eyes_plate(0, 0, -3);
 	}
 }
 
