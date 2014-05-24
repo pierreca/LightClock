@@ -58,8 +58,12 @@ module components(x, y, z) {
 module mounting_hardware(x, y, z) {
 	translate([x, y, z]) {
 		// Large screws
-		rotate([180, 0, 0]) long_screw(eye_separation / 2, -(left_eye_height - 13), -12);
-		rotate([180, 0, 0]) long_screw(-eye_separation / 2, -(right_eye_height - 8), -12);
+		rotate([180, 0, 0]) {
+			long_screw(eye_separation / 2, -(left_eye_height - 13), -12);
+			long_screw(-eye_separation / 2, -(right_eye_height - 8), -12);
+			big_spacer(eye_separation / 2, -(left_eye_height - 13), 5);
+			big_spacer(-eye_separation / 2, -(right_eye_height - 8), 5);
+		}
 
 		// Arduino mounting spacers and screws
 		spacer(-25, -9, -30);
@@ -90,7 +94,7 @@ module ring_holder (x, y, z) {
 	}
 }
 
-module eyes_plate(x, y, z) {
+module rings_back_plate(x, y, z) {
 	translate([x, y, z]) {
 		difference() {
 			hull() {
@@ -107,21 +111,23 @@ module eyes_plate(x, y, z) {
 			translate([-eye_separation / 2, (right_eye_height - 8), -0.5]) 
 				cylinder(r = 2.5, h = acrylic_plate_height + 1);
 
-			translate([0, 10, -0.5]) cube(size=[acrylic_plate_height,10, acrylic_plate_height + 1]);
-			translate([0, 30, -0.5]) cube(size=[acrylic_plate_height,10, acrylic_plate_height + 1]);
 		}
-		eyes_plate_holder(0, 10, -36 + 2 * acrylic_plate_height);
+		difference() {
+			cylinder(h = acrylic_plate_height, r = clock_radius);
+			translate([0, 0, -0.5]) cylinder(h = acrylic_plate_height + 1, r = clock_radius - 13);
+		}
+		translate([50,20,0]) cube(size=[20, 20, acrylic_plate_height]);
+		translate([-70,20,0]) cube(size=[40, 20, acrylic_plate_height]);
+		translate([-10,40,0]) cube(size=[20, 40, acrylic_plate_height]);
+		//eyes_plate_holder(0, 10, -36 + 2 * acrylic_plate_height);
 	}
 }
 
-module eyes_plate_holder(x, y, z) {
+module ring_side_plate(x, y, z) {
 	translate([x, y, z]) {
 		difference() {
-			cube(size=[acrylic_plate_height, 30, 36 - acrylic_plate_height]);
-			translate([-0.5, 10, -1]) 
-				cube(size=[acrylic_plate_height + 1, 10, acrylic_plate_height + 1]);
-			translate([-0.5, 10, 36 - acrylic_plate_height - acrylic_plate_height]) 
-				cube(size=[acrylic_plate_height + 1, 10, acrylic_plate_height + 1]);
+			cylinder(h = acrylic_plate_height, r = clock_radius);
+			translate([0, 0, -0.5]) cylinder(h = acrylic_plate_height + 1, r = 80);
 		}
 	}
 }
@@ -137,15 +143,10 @@ module back_plate (x, y, z) {
 	}
 }
 
-module ring_holders(x, y, z) {
+module ring_mounting(x, y, z) {
 	translate([x, y, z]) {
-		// 60-LEDs ring holders
-		ring_holder(-clock_radius, -1.5, -33);
-		rotate([0, 0, 90]) ring_holder(-clock_radius, -1.5, -33);
-		rotate([0, 0, 180]) ring_holder(-clock_radius, -1.5, -33);
-		rotate([0, 0, -90]) ring_holder(-clock_radius, -1.5, -33);
-
-		eyes_plate(0, 0, -3);
+		rings_back_plate(0, 0, -3);
+		ring_side_plate(0,0,0);
 	}
 }
 
@@ -161,5 +162,5 @@ module ring_holders(x, y, z) {
 	color("black") back_plate(0, 0, -33);
 	components(0, 0, 0);
 	mounting_hardware(0, 0, 0);
-	color("red") ring_holders(0,0,0);
+	color("red") ring_mounting(0,0,0);
 //}
