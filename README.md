@@ -1,6 +1,6 @@
 LightClock is a simple clock project.
 
-![LightClock Blurry Pic](https://github.com/pierreca/LightClock/blurrypic.jpg)
+![LightClock Blurry Pic](http://raw.github.com/pierreca/LightClock/master/blurrypic.jpg)
 
 #Hardware#
 
