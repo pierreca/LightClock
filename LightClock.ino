@@ -12,7 +12,7 @@
 #define NEO_HOUR_PIN 6
 #define NEO_MINSEC_PIN 5
 #define NEO_ANIM_PIN 4
-#define NEO_BRIGHTNESS 127
+#define NEO_BRIGHTNESS 64
 
 #define RED 0x1
 #define YELLOW 0x3
@@ -43,6 +43,7 @@ uint32_t neoGreen = hourStrip.Color(0, 255, 0);
 uint32_t neoBlue = hourStrip.Color(0, 0, 255);
 uint32_t neoMagenta = hourStrip.Color(255, 0, 255);
 uint32_t neoBlack = hourStrip.Color(0, 0, 0);
+uint32_t neoYellow = hourStrip.Color(255, 255, 0);
 
 char dateString[DATE_STRING_LENGTH + 1];
 char timeString[TIME_STRING_LENGTH + 1];
@@ -74,9 +75,9 @@ void setup()
 	minSecStrip.setBrightness(NEO_BRIGHTNESS);
 	minSecStrip.show();
 
-	/*animStrip.begin();
+	animStrip.begin();
 	animStrip.setBrightness(NEO_BRIGHTNESS);
-	animStrip.show();*/
+	animStrip.show();
 
 	if (!rtc.isrunning())
 	{
@@ -115,6 +116,11 @@ void setNeoPixels(DateTime time)
 	uint16_t h = time.hour() < 12 ? time.hour() : time.hour() - 12;
 	uint16_t m = time.minute();
 	uint16_t s = time.second();
+
+        for (uint16_t i = 0; i < time.hour(); i++)
+        {
+                animStrip.setPixelColor(i, neoYellow);
+        }
 
 	for (uint16_t i = 0; i <= h; i++)
 	{
@@ -160,6 +166,7 @@ void showStrips()
 {
 	hourStrip.show();
 	minSecStrip.show();
+        animStrip.show();
 }
 
 
