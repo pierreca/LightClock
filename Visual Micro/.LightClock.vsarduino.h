@@ -56,11 +56,11 @@ void setTimeExit();
 
 #include "C:\Program Files (x86)\Arduino\hardware\arduino\cores\arduino\arduino.h"
 #include "C:\Program Files (x86)\Arduino\hardware\arduino\variants\standard\pins_arduino.h" 
-#include "C:\Users\Pierre\Documents\Arduino\LightClock\LightClock.ino"
-#include "C:\Users\Pierre\Documents\Arduino\LightClock\ClockStateMachine.cpp"
-#include "C:\Users\Pierre\Documents\Arduino\LightClock\ClockStateMachine.h"
-#include "C:\Users\Pierre\Documents\Arduino\LightClock\LoopHelpers.cpp"
-#include "C:\Users\Pierre\Documents\Arduino\LightClock\LoopHelpers.h"
-#include "C:\Users\Pierre\Documents\Arduino\LightClock\TimeHelpers.cpp"
-#include "C:\Users\Pierre\Documents\Arduino\LightClock\TimeHelpers.h"
+#include "C:\Users\Pierre\Documents\GitHub\LightClock\LightClock.ino"
+#include "C:\Users\Pierre\Documents\GitHub\LightClock\ClockStateMachine.cpp"
+#include "C:\Users\Pierre\Documents\GitHub\LightClock\ClockStateMachine.h"
+#include "C:\Users\Pierre\Documents\GitHub\LightClock\LoopHelpers.cpp"
+#include "C:\Users\Pierre\Documents\GitHub\LightClock\LoopHelpers.h"
+#include "C:\Users\Pierre\Documents\GitHub\LightClock\TimeHelpers.cpp"
+#include "C:\Users\Pierre\Documents\GitHub\LightClock\TimeHelpers.h"
 #endif

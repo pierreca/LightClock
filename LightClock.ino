@@ -166,7 +166,7 @@ void showStrips()
 {
 	hourStrip.show();
 	minSecStrip.show();
-        animStrip.show();
+    animStrip.show();
 }
 
 
