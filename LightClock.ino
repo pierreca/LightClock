@@ -9,11 +9,15 @@
 #include "LoopHelpers.h"
 #include "TimeHelpers.h"
 
+#define PIR_PIN 3
+#define PIR_CALIBRATION_SECONDS 20
+
 #define NEO_HOUR_PIN 6
 #define NEO_MINSEC_PIN 5
 #define NEO_ANIM_PIN 4
 #define NEO_BRIGHTNESS 64
 
+#define OFF 0x0
 #define RED 0x1
 #define YELLOW 0x3
 #define GREEN 0x2
@@ -29,6 +33,8 @@
 #define TIME_STRING_LENGTH 8
 
 #define TRANSITION_DELAY 300
+
+#define AWAKE_TIME_SECONDS 3600
 
 RTC_DS1307 rtc;
 
@@ -52,12 +58,17 @@ char timeString[TIME_STRING_LENGTH + 1];
 State ShowTime = State(showTimeEnter, showTimeUpdate, showTimeExit);
 State SetDate = State(setDateEnter, setDateUpdate, setDateExit);
 State SetTime = State(setTimeEnter, setTimeUpdate, setTimeExit);
+State Sleeping = State(setSleepingEnter, setSleepingUpdate, setSleepingExit);
 
 FSM clockStateMachine = FSM(ShowTime);
 
 DateTime newDateTime;
 short cursorPosition;
 short maxCursorPosition;
+
+DateTime now;
+DateTime wakeUpTime;
+bool  wakeUp = false;
 
 void setup()
 {
@@ -84,6 +95,30 @@ void setup()
 		Serial.write("RTC not running!\n");
 		rtc.adjust(DateTime(__DATE__, __TIME__));
 	}
+
+	pinMode(PIR_PIN, INPUT);
+
+	lcd.setBacklight(BLUE);
+
+	for (int i = PIR_CALIBRATION_SECONDS; i > 0; i--)
+	{
+		lcd.clear();
+		lcd.setCursor(0, 0);
+		lcd.print("CALIBRATING PIR");
+		lcd.setCursor(0, 1);
+		lcd.print(i);
+		delay(1000);
+	}
+	
+	lcd.clear();
+	lcd.setBacklight(GREEN);
+	lcd.setCursor(0, 0);
+	lcd.print("DONE!");
+
+	delay(1000);
+
+	now = rtc.now();
+	wakeUpTime = rtc.now();
 }
 
 void loop()
@@ -106,6 +141,20 @@ void loop()
 		}
 
 		delay(TRANSITION_DELAY);
+	}
+
+	if (clockStateMachine.isInState(Sleeping) && wakeUp)
+	{
+		clockStateMachine.transitionTo(ShowTime);
+	}
+	else if (clockStateMachine.isInState(ShowTime))
+	{
+		long secondsDiff = now.unixtime() - wakeUpTime.unixtime();
+		if (secondsDiff >= AWAKE_TIME_SECONDS)
+		{
+			wakeUp = false;
+			clockStateMachine.transitionTo(Sleeping);
+		}
 	}
 
 	clockStateMachine.update();
@@ -179,7 +228,7 @@ void showTimeEnter()
 
 void showTimeUpdate()
 {
-	DateTime now = rtc.now();
+	now = rtc.now();
 
 	sprintf(dateString, "%02d/%02d/%d", now.month(), now.day(), now.year());
 	sprintf(timeString, "%02d:%02d:%02d", now.hour(), now.minute(), now.second());
@@ -559,4 +608,53 @@ void setTimeExit()
 	int second = atoi(secondString);
 
 	rtc.adjust(DateTime(year, month, day, hour, minute, second));
+}
+
+void setSleepingEnter()
+{
+	lcd.clear();
+	lcd.setBacklight(RED);
+	lcd.setCursor(0, 0);
+	lcd.print("GOING TO SLEEP");
+	delay(1000);
+	turnOffStrips();
+	lcd.setBacklight(OFF);
+	lcd.clear();
+}
+
+void setSleepingExit()
+{
+	lcd.clear();
+	lcd.setBacklight(RED);
+	lcd.setCursor(0, 0);
+	lcd.print("WAKING UP...");
+	delay(1000);
+	turnOnStrips();
+}
+
+void setSleepingUpdate()
+{
+	if (digitalRead(PIR_PIN) == HIGH)
+	{
+		wakeUpTime = rtc.now();
+		wakeUp = true;
+	}
+}
+
+void turnOffStrips()
+{
+	animStrip.setBrightness(0);
+	hourStrip.setBrightness(0);
+	minSecStrip.setBrightness(0);
+
+	showStrips();
+}
+
+void turnOnStrips()
+{
+	animStrip.setBrightness(NEO_BRIGHTNESS);
+	hourStrip.setBrightness(NEO_BRIGHTNESS);
+	minSecStrip.setBrightness(NEO_BRIGHTNESS);
+
+	showStrips();
 }

@@ -53,6 +53,11 @@ void setDateExit();
 void setTimeEnter();
 void setTimeUpdate();
 void setTimeExit();
+void setSleepingEnter();
+void setSleepingExit();
+void setSleepingUpdate();
+void turnOffStrips();
+void turnOnStrips();
 
 #include "C:\Program Files (x86)\Arduino\hardware\arduino\cores\arduino\arduino.h"
 #include "C:\Program Files (x86)\Arduino\hardware\arduino\variants\standard\pins_arduino.h" 

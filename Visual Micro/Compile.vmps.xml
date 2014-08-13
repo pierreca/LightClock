@@ -9,24 +9,24 @@
       <VCCodeMacros />
     </VCCodeModel>
     <BreakPoints>
-      <BreakPoint Index="1" Name="LightClock.ino, line 89" Id="24d75494-64f9-4a71-9427-1ada22bfaeed" Enabled="1" Message="{millis()}" MessageTextType="2" PreProcessedMessage="{0}" Condition="millis()&gt;0 || millis()&gt;1" ConditionType="1" CurrentHits="0" File="c:\users\pierre\documents\github\lightclock\lightclock.ino" FileLine="89" FileColumn="1" FunctionName="" FunctionLineOffset="1" FunctionColumnOffset="1" HitCountTarget="250" HitCountType="4" Language="C++" LocationType="3" Tag="&lt;vmbp Id='24d75494-64f9-4a71-9427-1ada22bfaeed'/&gt;" Type="1" ToString="System.__ComObject" BreakWhenHit="1">
-        <Source>82		if (!rtc.isrunning())
-83		{
-84			Serial.write("RTC not running!\n");
-85			rtc.adjust(DateTime(__DATE__, __TIME__));
-86		}
-87	}
-88	
---&gt;89	void loop()
-90	{
-91		uint8_t buttons = lcd.readButtons();
-92	
-93		if (buttons &amp; BUTTON_SELECT) 
-94		{
-95			if (clockStateMachine.isInState(ShowTime))
-96			{
-97				clockStateMachine.transitionTo(SetDate);
-98			}
+      <BreakPoint Index="1" Name="LightClock.ino, line 124" Id="24d75494-64f9-4a71-9427-1ada22bfaeed" Enabled="1" Message="{millis()}" MessageTextType="2" PreProcessedMessage="{0}" Condition="millis()&gt;0 || millis()&gt;1" ConditionType="1" CurrentHits="0" File="c:\users\pierre\documents\github\lightclock\lightclock.ino" FileLine="124" FileColumn="1" FunctionName="" FunctionLineOffset="1" FunctionColumnOffset="1" HitCountTarget="250" HitCountType="4" Language="C++" LocationType="3" Tag="&lt;vmbp Id='24d75494-64f9-4a71-9427-1ada22bfaeed'/&gt;" Type="1" ToString="System.__ComObject" BreakWhenHit="1">
+        <Source>117	
+118		delay(1000);
+119	
+120		now = rtc.now();
+121		wakeUpTime = rtc.now();
+122	}
+123	
+--&gt;124	void loop()
+125	{
+126		uint8_t buttons = lcd.readButtons();
+127	
+128		if (buttons &amp; BUTTON_SELECT) 
+129		{
+130			if (clockStateMachine.isInState(ShowTime))
+131			{
+132				clockStateMachine.transitionTo(SetDate);
+133			}
 </Source>
         <MessageVariables>
           <MessageVariable Name="millis()" Index="1" />
