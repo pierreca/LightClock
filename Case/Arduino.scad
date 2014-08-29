@@ -20,7 +20,6 @@ module buttons(x, y, z) {
 		button(x + 16, y + 4);
 		button(x + 24, y + 7);
 		button(x + 72.5, y);
-		
 	}
 }
 
@@ -56,24 +55,46 @@ module arduino (x, y, z) {
 	}
 }
 
-module adafruit_lcd_shield(x, y, z) {
+module adafruit_lcd_shield_base(x, y, z) {
 	translate([x, y, z]) {
 		pcb(81, 54); // base PCB
+		buttons(0, 0, pcb_thickness); // buttons
+	}
+
+}
+
+module adafruit_lcd_shield_screen() {
+	pcb(81, 36); // screen PCB
+	lcd_16x2(3, 3.5, 1.6); // LCD
+}
+
+module adafruit_lcd_shield_default(x, y, z) {
+	translate([x, y, z]) {
+		adafruit_lcd_shield_base(0, 0, 0);
+
+		translate([0, 13.5, 3.8]) { 
+			adafruit_lcd_shield_screen();
+		}
+	}
+}
+
+module adafruit_lcd_shield_stackable(x, y, z) {
+	translate([x, y, z]) {
+		adafruit_lcd_shield_base(0, 0, 0);
 		color("black") translate([26, 1, pcb_thickness]) cube (size=[21, 2.5, 8.5]); // Header
 		color("black") translate([49, 1, pcb_thickness]) cube (size=[16, 2.5, 8.5]); // Header
 		color("black") translate([17, 49.5, pcb_thickness]) cube (size=[26, 2.5, 8.5]); // Header
 		color("black") translate([44, 49.5, pcb_thickness]) cube (size=[21, 2.5, 8.5]); // Header
-		buttons(0, 0, pcb_thickness); // buttons
 		rotate ([3,0,0]) translate([0, 13.5, 3]) { 
-			pcb(81, 36); // screen PCB
-			lcd_16x2(3, 3.5, 1.6); // LCD
+			adafruit_lcd_shield_screen();
 		}
 	}
 }
 
 module arduino_lcd_shield(x, y, z) {
 	arduino(x, y, z);
-	adafruit_lcd_shield(x, y, z + 13);
+	adafruit_lcd_shield_stackable(x, y, z + 13);
 }
 
-arduino_lcd_shield(0, 0, 0);
+//arduino_lcd_shield(0, 0, 0);
+adafruit_lcd_shield_default(0, 0, 0);
