@@ -10,7 +10,7 @@
 #include "TimeHelpers.h"
 
 #define PIR_OVERRIDE_BUTTON_PIN 2
-#define PIR_OVERRIDE_LED = 7
+#define PIR_OVERRIDE_LED 7
 #define PIR_PIN 3
 #define PIR_CALIBRATION_SECONDS 20
 
@@ -106,6 +106,7 @@ void setup()
 
 	pinMode(PIR_PIN, INPUT);
 	pinMode(PIR_OVERRIDE_BUTTON_PIN, INPUT_PULLUP);
+	pinMode(PIR_OVERRIDE_LED, OUTPUT);
 
 	lcd.setBacklight(BLUE);
 
@@ -132,6 +133,7 @@ void setup()
 
 void loop()
 {
+	// Debounce the PIR Override button (based on http://arduino.cc/en/Tutorial/Debounce)
 	int currentPirOverrideButtonState = digitalRead(PIR_OVERRIDE_BUTTON_PIN);
 	if (currentPirOverrideButtonState != lastPirOverrideButtonState)
 	{
@@ -142,6 +144,7 @@ void loop()
 		&& currentPirOverrideButtonState != lastPirOverrideButtonState)
 	{
 		pirEnabled = !pirEnabled;
+		digitalWrite(PIR_OVERRIDE_LED, pirEnabled);
 	}
 
 	lastPirOverrideButtonState = currentPirOverrideButtonState;
