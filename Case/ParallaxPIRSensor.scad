@@ -43,7 +43,7 @@ module connector (x, y, z) {
 }
 
 
-module PIRSensor (x, y, z) {
+module pir_sensor (x, y, z) {
 	translate([x, y, z]) {
 		pcb(0,0,0);
 		sensor(6, 0.8, pcb_thickness);	

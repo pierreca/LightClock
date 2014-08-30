@@ -9,6 +9,8 @@
 
 use <Hardware.scad>;
 use <Arduino.scad>;
+use <ParallaxPIRSensor.scad>;
+use <WaterproofPushButton.scad>;
 include <NeoPixels.scad>;
 
 $fa=0.1;
@@ -19,8 +21,8 @@ screwhole_radius = 3;
 acrylic_plate_height = 3;
 
 // Positions
-left_eye_height = 25;
-right_eye_height = 20;
+right_eye_height = 25;
+left_eye_height = 20;
 eye_separation = 53;
 
 arduino_x = -40.5;
@@ -40,31 +42,19 @@ module chronodot(x, y, z) {
 module components(x, y, z) {
 	translate([x, y, z]) {
 		neopixels_ring_60(0, 0, 0);
-
-		// left eye
-		neopixels_ring_24(eye_separation / 2, left_eye_height, 0);
-
-		// right eye
-		neopixels_ring_12(-eye_separation / 2, right_eye_height, 0);
-
-		// chronodot
-		chronodot(eye_separation / 2, left_eye_height + 10, -20);
-		
-		// arduino + lcd shield
+		neopixels_ring_24(-eye_separation / 2, right_eye_height, 0);
+		neopixels_ring_12(eye_separation / 2, left_eye_height, 0);
+		chronodot(-55, 0, -20);
 		arduino_lcd_shield(arduino_x, arduino_y, arduino_z);
+		pir_sensor(-eye_separation / 2 - 18, right_eye_height - 17, -1);
+		waterproof_pushbutton(eye_separation / 2, left_eye_height, -13, 11);
+		translate([55,-30,-13]) rotate([0,180,0]) waterproof_pushbutton(0,0,0,4);
 	}
 }
 
 module mounting_hardware(x, y, z) {
 	translate([x, y, z]) {
-		// Large screws
-		rotate([180, 0, 0]) {
-			long_screw(eye_separation / 2, -(left_eye_height - 13), -12);
-			long_screw(-eye_separation / 2, -(right_eye_height - 8), -12);
-			big_spacer(eye_separation / 2, -(left_eye_height - 13), 5);
-			big_spacer(-eye_separation / 2, -(right_eye_height - 8), 5);
-		}
-
+		
 		// Arduino mounting spacers and screws
 		spacer(-25, -9, -30);
 		screw(-25, -9, -35.5);
@@ -79,8 +69,8 @@ module mounting_hardware(x, y, z) {
 		screw(25.5, -25, -35.5);
 
 		// Chronodot spacer and screw
-		spacer(eye_separation / 2, left_eye_height - 2, -30);
-		screw(eye_separation / 2, left_eye_height - 2, -35.5);
+		spacer(-55, -12, -30);
+		screw(-55, -12, -35.5);
 	}
 }
 
@@ -97,29 +87,15 @@ module ring_holder (x, y, z) {
 module rings_back_plate(x, y, z) {
 	translate([x, y, z]) {
 		difference() {
-			hull() {
-				translate([eye_separation / 2, left_eye_height, 0]) 
-					cylinder(r = ring24_outer_radius + 2, h = acrylic_plate_height);
-	
-				translate([-eye_separation / 2, right_eye_height, 0]) 
-					cylinder(r = ring12_outer_radius + 2, h = acrylic_plate_height);
-			}
-
-			translate([0,-10,-0.5]) cube(size=[60, 5, acrylic_plate_height + 1]);
-			translate([eye_separation / 2, (left_eye_height - 13), -0.5]) 
-				cylinder(r = 2.5, h = acrylic_plate_height + 1);
-			translate([-eye_separation / 2, (right_eye_height - 8), -0.5]) 
-				cylinder(r = 2.5, h = acrylic_plate_height + 1);
-
-		}
-		difference() {
 			cylinder(h = acrylic_plate_height, r = clock_radius);
-			translate([0, 0, -0.5]) cylinder(h = acrylic_plate_height + 1, r = clock_radius - 13);
+			translate([0, 0, -0.5]) cylinder(h = acrylic_plate_height + 1, r = clock_radius - 10);
 		}
-		translate([50,20,0]) cube(size=[20, 20, acrylic_plate_height]);
-		translate([-70,20,0]) cube(size=[40, 20, acrylic_plate_height]);
-		translate([-10,40,0]) cube(size=[20, 40, acrylic_plate_height]);
-		//eyes_plate_holder(0, 10, -36 + 2 * acrylic_plate_height);
+		
+		translate([-68,35,0]) cube(size=[136,15,acrylic_plate_height]);
+		translate([-25,62,0]) cube(size=[50,18,acrylic_plate_height]);
+		translate([-25,-80,0]) cube(size=[50,18,acrylic_plate_height]);
+		translate([-80,-5,0]) cube(size=[160,10,acrylic_plate_height]);
+		translate([16,5,0]) cube(size=[20,30,acrylic_plate_height]);
 	}
 }
 
@@ -158,8 +134,8 @@ module ring_mounting(x, y, z) {
 
 //projection()
 //difference() {
-	color("black") face_plate(0, 0, 4);
-	color("black") back_plate(0, 0, -33);
+	//color("black") face_plate(0, 0, 4);
+	//color("black") back_plate(0, 0, -33);
 	components(0, 0, 0);
 	mounting_hardware(0, 0, 0);
 	color("red") ring_mounting(0,0,0);

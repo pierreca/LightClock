@@ -93,7 +93,7 @@ module adafruit_lcd_shield_stackable(x, y, z) {
 
 module arduino_lcd_shield(x, y, z) {
 	arduino(x, y, z);
-	adafruit_lcd_shield_stackable(x, y, z + 13);
+	adafruit_lcd_shield_default(x, y, z + 13);
 }
 
 //arduino_lcd_shield(0, 0, 0);
