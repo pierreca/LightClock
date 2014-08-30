@@ -73,11 +73,15 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ClockStateMachine.h">
+      <FileType>CppCode</FileType>
+    </ClInclude>
     <ClInclude Include="LoopHelpers.h" />
     <ClInclude Include="TimeHelpers.h" />
     <ClInclude Include="Visual Micro\.LightClock.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ClockStateMachine.cpp" />
     <ClCompile Include="LoopHelpers.cpp" />
     <ClCompile Include="TimeHelpers.cpp" />
   </ItemGroup>

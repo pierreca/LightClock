@@ -9,6 +9,8 @@
 #include "LoopHelpers.h"
 #include "TimeHelpers.h"
 
+#define PIR_OVERRIDE_BUTTON_PIN 2
+#define PIR_OVERRIDE_LED = 7
 #define PIR_PIN 3
 #define PIR_CALIBRATION_SECONDS 20
 
@@ -69,6 +71,12 @@ short maxCursorPosition;
 DateTime now;
 DateTime wakeUpTime;
 bool  wakeUp = false;
+bool pirEnabled = true;
+
+long lastDebounceTime = 0;  
+long debounceDelay = 50;
+int pirOverrideButtonState;             
+int lastPirOverrideButtonState = HIGH;   
 
 void setup()
 {
@@ -97,6 +105,7 @@ void setup()
 	}
 
 	pinMode(PIR_PIN, INPUT);
+	pinMode(PIR_OVERRIDE_BUTTON_PIN, INPUT_PULLUP);
 
 	lcd.setBacklight(BLUE);
 
@@ -123,6 +132,20 @@ void setup()
 
 void loop()
 {
+	int currentPirOverrideButtonState = digitalRead(PIR_OVERRIDE_BUTTON_PIN);
+	if (currentPirOverrideButtonState != lastPirOverrideButtonState)
+	{
+		lastDebounceTime = millis();
+	}
+
+	if ((millis() - lastDebounceTime) > debounceDelay
+		&& currentPirOverrideButtonState != lastPirOverrideButtonState)
+	{
+		pirEnabled = !pirEnabled;
+	}
+
+	lastPirOverrideButtonState = currentPirOverrideButtonState;
+
 	uint8_t buttons = lcd.readButtons();
 
 	if (buttons & BUTTON_SELECT) 
@@ -634,7 +657,7 @@ void setSleepingExit()
 
 void setSleepingUpdate()
 {
-	if (digitalRead(PIR_PIN) == HIGH)
+	if (pirEnabled && digitalRead(PIR_PIN) == HIGH)
 	{
 		wakeUpTime = rtc.now();
 		wakeUp = true;
