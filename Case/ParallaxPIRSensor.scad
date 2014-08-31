@@ -23,7 +23,8 @@ module sensor (x, y, z) {
 			cube(size=[sensor_base_width, sensor_base_width, sensor_base_thickness]);
 			translate([sensor_orb_radius, sensor_orb_radius, sensor_base_thickness])
 			difference() {
-				sphere(sensor_orb_radius);
+				sphere(sensor_orb_radius); // for normal rendering
+				//cylinder(h = 20, r = sensor_orb_radius); // helps for laser cutting
 				translate([-(sensor_orb_radius + 0.5), -(sensor_orb_radius + 0.5), -(2*sensor_orb_radius + 1)]) cube(size=[2*sensor_orb_radius + 1, 2*sensor_orb_radius + 1, 2*sensor_orb_radius + 1]);
 			}
 		}		
@@ -52,5 +53,5 @@ module pir_sensor (x, y, z) {
 	}
 }
 
-PIRSensor(0,0,0);
+pir_sensor(0,0,0);
 

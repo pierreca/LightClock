@@ -54,7 +54,6 @@ module components(x, y, z) {
 
 module mounting_hardware(x, y, z) {
 	translate([x, y, z]) {
-		
 		// Arduino mounting spacers and screws
 		spacer(-25, -9, -30);
 		screw(-25, -9, -35.5);
@@ -71,6 +70,55 @@ module mounting_hardware(x, y, z) {
 		// Chronodot spacer and screw
 		spacer(-55, -12, -30);
 		screw(-55, -12, -35.5);
+
+		// 60 LEDs ring holders
+		short_screw(0, 69, -6); //top
+		short_spacer(0, 69, 0);
+
+		short_screw(0, -69, -6); // bottom
+		short_spacer(0, -69, 0);
+
+		short_screw(-69, 0, -6); // left
+		short_spacer(-69, 0, 0);
+
+		short_screw(69, 0, -6); // right
+		short_spacer(69, 0, 0);
+
+		// 24 LEDs ring holders
+		short_screw(-38, 44, -6); //top left
+		short_spacer(-38, 44, 0);
+
+		short_screw(-15, 44, -6); // top right
+		short_spacer(-15, 44, 0);
+
+		short_screw(-53, 0, -6); // bottom left
+		short_spacer(-53, 0, 0);
+
+		short_screw(0, 0, -6); // bottom right
+		short_spacer(0, 0, 0);
+
+		// 12 LEDs ring holders
+		short_screw(17, 40, -6); //top left
+		short_spacer(17, 40, 0);
+
+		short_screw(36, 40, -6); // top right
+		short_spacer(36, 40, 0);
+
+		short_screw(17, 0, -6); // bottom left
+		short_spacer(17, 0, 0);
+
+		short_screw(36, 0, -6); // bottom right
+		short_spacer(36, 0, 0);
+
+		// main screws
+		rotate([0,180,0]){
+			long_screw(27,43,-3);
+			big_spacer(27,43,4);
+			long_screw(-27,43,-3);
+			big_spacer(-27,43,4);
+			long_screw(-10,-67,-3);
+			big_spacer(-10,-67,4);
+		}
 	}
 }
 
@@ -94,8 +142,11 @@ module rings_back_plate(x, y, z) {
 		translate([-68,35,0]) cube(size=[136,15,acrylic_plate_height]);
 		translate([-25,62,0]) cube(size=[50,18,acrylic_plate_height]);
 		translate([-25,-80,0]) cube(size=[50,18,acrylic_plate_height]);
-		translate([-80,-5,0]) cube(size=[160,10,acrylic_plate_height]);
-		translate([16,5,0]) cube(size=[20,30,acrylic_plate_height]);
+		translate([12,5,0]) cube(size=[30,30,acrylic_plate_height]);
+		difference() {
+			translate([-80,-5,0]) cube(size=[160,10,acrylic_plate_height]);
+			translate([-32,-6,0]) cube(size=[10,12, acrylic_plate_height]);
+		}
 	}
 }
 
@@ -126,17 +177,32 @@ module ring_mounting(x, y, z) {
 	}
 }
 
-//projection()
-//difference() {
-//	color("black") face_plate(0, 0, 0);
-//	components(0, 0, -4);
+// general view
+color("black") face_plate(0, 0, 4);
+color("black") back_plate(0, 0, -33);
+components(0, 0, 0);
+mounting_hardware(0, 0, 0);
+color("red") ring_mounting(0,0,0);
+
+
+// face plate laser cut
+//projection() difference() {
+//	face_plate(0, 0, 4);
+//	components(0, 0, 0);
 //}
 
-//projection()
-//difference() {
-	//color("black") face_plate(0, 0, 4);
-	//color("black") back_plate(0, 0, -33);
-	components(0, 0, 0);
-	mounting_hardware(0, 0, 0);
-	color("red") ring_mounting(0,0,0);
+// side ring laser cut
+//projection() ring_side_plate(0, 0, 0);
+
+// Rings back plate laser cut
+//projection() difference() {
+//	rings_back_plate(0,0,-3);
+//	waterproof_pushbutton(eye_separation / 2, left_eye_height, -13, 11);
+//	mounting_hardware(0,0,0);
+//}
+
+// Back plate laser cut
+//projection() difference() {
+//	back_plate(0,0,-33);
+//	mounting_hardware(0,0,0);
 //}

@@ -1,5 +1,5 @@
 body_height=20.5;
-body_radius=7.5;
+body_radius=8;
 
 head_height=1.8;
 head_r1=8.75;
