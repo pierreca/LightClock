@@ -36,7 +36,7 @@
 
 #define TRANSITION_DELAY 300
 
-#define AWAKE_TIME_SECONDS 3600
+#define AWAKE_TIME_SECONDS 1800
 
 RTC_DS1307 rtc;
 
@@ -72,11 +72,6 @@ DateTime now;
 DateTime wakeUpTime;
 bool  wakeUp = false;
 bool pirEnabled = true;
-
-long lastDebounceTime = 0;  
-long debounceDelay = 50;
-int pirOverrideButtonState;             
-int lastPirOverrideButtonState = HIGH;   
 
 void setup()
 {
@@ -133,21 +128,23 @@ void setup()
 
 void loop()
 {
-	// Debounce the PIR Override button (based on http://arduino.cc/en/Tutorial/Debounce)
-	int currentPirOverrideButtonState = digitalRead(PIR_OVERRIDE_BUTTON_PIN);
-	if (currentPirOverrideButtonState != lastPirOverrideButtonState)
-	{
-		lastDebounceTime = millis();
-	}
-
-	if ((millis() - lastDebounceTime) > debounceDelay
-		&& currentPirOverrideButtonState != lastPirOverrideButtonState)
+	if (digitalRead(PIR_OVERRIDE_BUTTON_PIN) == LOW)
 	{
 		pirEnabled = !pirEnabled;
-		digitalWrite(PIR_OVERRIDE_LED, pirEnabled);
+
+		if (clockStateMachine.isInState(Sleeping)) {
+			wakeUp = true;
+		} 
+		else
+		{
+			wakeUp = false;
+			clockStateMachine.transitionTo(Sleeping);
+		}
+
+		delay(300);
 	}
 
-	lastPirOverrideButtonState = currentPirOverrideButtonState;
+	digitalWrite(PIR_OVERRIDE_LED, pirEnabled);
 
 	uint8_t buttons = lcd.readButtons();
 
@@ -171,6 +168,7 @@ void loop()
 
 	if (clockStateMachine.isInState(Sleeping) && wakeUp)
 	{
+		wakeUpTime = rtc.now();
 		clockStateMachine.transitionTo(ShowTime);
 	}
 	else if (clockStateMachine.isInState(ShowTime))
@@ -662,7 +660,6 @@ void setSleepingUpdate()
 {
 	if (pirEnabled && digitalRead(PIR_PIN) == HIGH)
 	{
-		wakeUpTime = rtc.now();
 		wakeUp = true;
 	}
 }

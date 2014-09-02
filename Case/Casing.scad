@@ -205,4 +205,5 @@ color("red") ring_mounting(0,0,0);
 //projection() difference() {
 //	back_plate(0,0,-33);
 //	mounting_hardware(0,0,0);
+//	translate([55,-30,-13]) rotate([0,180,0]) waterproof_pushbutton(0,0,0,4);
 //}
