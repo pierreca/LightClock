@@ -5,8 +5,11 @@ LightClock is a simple clock project.
 #Hardware#
 * [Arduino Uno R3](http://www.adafruit.com/products/50 "Arduino Uno R3")
 * [LCD Shield](http://www.adafruit.com/products/714)
-* NeoPixels Rings ([12](http://www.adafruit.com/products/1643), [24](http://www.adafruit.com/products/1586) and [60](http://www.adafruit.com/products/1768) LEDs)
+* Adafruit NeoPixels Rings ([12](http://www.adafruit.com/products/1643), [24](http://www.adafruit.com/products/1586) and [60](http://www.adafruit.com/products/1768) LEDs)
 * [Chronodot](http://www.adafruit.com/products/255)
+* [Parallax PIR Sensor](http://www.parallax.com/product/555-28027)
+* [Adafruit Weatherproof Pushbutton (Momentary)](https://www.adafruit.com/products/481)
+* [Adafruit Weatherproof Pushbutton (On/Off)](https://www.adafruit.com/products/915)
 
 #Chassis#
 Made of smoke laser-cut acrylic. It's a very bad design that constantly falls appart and is a pain to assemble.
@@ -18,6 +21,9 @@ Made of smoke laser-cut acrylic. It's a very bad design that constantly falls ap
 	* Date and Time on the LCD screen
 * Time can be set with the buttons of the LCD shield.
 * Keeps time even when not plugged thanks to the Chronodot battery
+* Clock stays on for 30 minutes then turns off. any movement detected by the PIR sensor will wake it up.
+* Front button enables/disable wake up from PIR sensor (for night time for example)
+* Back button acts as a regular on/off button
 
 #In Progress#
 (see other branches)
